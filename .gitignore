@@ -1,0 +1,10 @@
+# Ambiente virtuale e cache
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# I risultati sono rigenerabili con `python run_all.py`.
+# Decommentare se non si vogliono versionare.
+results/
+*.pdf

@@ -1,0 +1,100 @@
+# =====================================================================
+# Configurazione del modello dinamico rigido a 2 GdL (azimut + elevazione)
+# ---------------------------------------------------------------------
+# Ogni voce corrisponde alla tabella della sezione 4 della specifica.
+# I campi marcati SEGNAPOSTO non provengono da una misura: ogni risultato
+# che ne dipende viene marcato con un avviso visibile in stdout, nelle
+# tabelle CSV e in results/report.md.
+# =====================================================================
+
+# --- Geometria della montatura -----------------------------------------
+# Posizione dell'asse di azimut nel piano XY della terna W, in cm.
+# ESATTA PER COSTRUZIONE: l'origine di W e' il centro della base dell'albero
+# azimutale, quindi l'asse di azimut passa per l'origine.
+az_axis_xy_cm: [0.0, 0.0]
+
+# Quota dell'asse di elevazione (punto O) in W, in cm.
+# MISURATA NEL CAD (2026-09-27): z_O = 54.9 cm sopra la base dell'albero.
+# Conferma indipendente: imponendo che il tensore di B sia principale
+# rispetto a O (I_xz,O = 0) si ricava z_O = 54.9125 cm, cioe' lo stesso
+# valore a meno di 0.13 mm. Ne risulta d_z = -0.44 cm: telescopio quasi
+# bilanciato in verticale.
+# Porre a null per usare z_O = z_G_B (d_z = 0 esatto): e' la configurazione
+# di riferimento a cui si riferiscono i valori attesi della sezione 5.
+z_O_cm: 54.9
+
+# Direzione dell'asse di elevazione in W.
+# Conseguenza di x_A0_W = "-Y": y_A0 = Z x x_A0 = +X. Coerente con il
+# momento minimo di A, che e' I_xx: i bracci della forcella sono
+# distanziati lungo X.
+elev_axis_W: "X"
+
+# Direzione orizzontale di x_A (proiezione del puntamento) nella posa CAD.
+# CONFERMATA NEL CAD (2026-09-27): il telescopio punta verso -Y.
+x_A0_W: "-Y"
+
+# Elevazione del telescopio nella posa CAD, in gradi (theta, non epsilon).
+theta_cad_deg: 0.0
+
+# --- Convenzioni dei dati CAD ------------------------------------------
+# "tensor"  : i fuori diagonale di Onshape sono gia' -int(x_i x_j dm)
+# "positive": sono +int(x_i x_j dm) e vanno negati
+# CONFERMATO DALL'UTENTE (2026-09-27): "tensor".
+onshape_products_sign: "tensor"
+
+# Componente contato due volte nelle due selezioni di Onshape
+# (4208-016001-000000 <1>). Finche' e' null viene stampato un avviso.
+# Formato, quando disponibile:
+#   shared_component:
+#     nome: "4208-016001-000000 <1>"
+#     sottrai_da: "A"            # oppure "B"
+#     massa_kg: 0.0
+#     r_G_cm: [0.0, 0.0, 0.0]    # baricentro in W
+#     I_G_kg_cm2: [[...],[...],[...]]   # nel proprio baricentro, assi // W
+shared_component: null
+
+# --- Parametri fisici ---------------------------------------------------
+g: 9.80665
+
+# Smorzamenti viscosi [N m s/rad].
+# SEGNAPOSTO: da identificare sperimentalmente.
+b_psi: 0.0
+b_theta: 0.0
+
+# Valori per l'analisi di sensibilita' agli smorzamenti [N m s/rad].
+b_sensitivity: [0.0, 0.1, 1.0, 10.0]
+
+# --- Griglie di analisi -------------------------------------------------
+# Velocita' di inseguimento in azimut [deg/s].
+# SEGNAPOSTO: serve la velocita' massima reale della montatura.
+omega0_deg_s: [0.0, 1.0, 5.0, 10.0]
+
+# Griglia dei punti di lavoro in elevazione [deg].
+# CONFERMATO DALL'UTENTE (2026-09-27): range di pitch reale della montatura,
+# theta da -45 a +45 (cioe' da 45 deg sopra l'orizzonte a 45 deg sotto).
+# Non e' piu' il default della specifica (che era -90..0, orizzonte-zenit).
+theta0_grid_deg:
+  start: -45.0
+  stop: 45.0
+  step: 1.0
+
+# Punti di lavoro usati per i diagrammi di Bode [deg].
+# Scelti per mostrare entrambi i regimi del range confermato: instabile
+# (theta < -3.16 deg circa, dove k_theta < 0) e oscillatorio (theta > -3.16).
+theta0_bode_deg: [-45.0, -15.0, 15.0, 45.0]
+
+# Sbilanciamenti d_z per l'analisi di sensibilita' [cm].
+dz_sensitivity_cm: [-2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0]
+
+# --- Estensione flessibile a 4 GdL (sezione 10) ------------------------
+flex_model: false
+
+# Parametri del modello flessibile. Tutti SEGNAPOSTO: finche' sono null,
+# flex4dof.py rifiuta di produrre risultati numerici.
+flex:
+  J_m_psi: null      # inerzia del rotore del motore di azimut [kg m^2]
+  J_m_theta: null    # inerzia del rotore del motore di elevazione [kg m^2]
+  k_psi: null        # rigidezza torsionale rotore-struttura, azimut [N m/rad]
+  k_theta: null      # rigidezza torsionale rotore-struttura, elevazione [N m/rad]
+  c_psi: null        # smorzamento interno del giunto, azimut [N m s/rad]
+  c_theta: null      # smorzamento interno del giunto, elevazione [N m s/rad]

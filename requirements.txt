@@ -1,0 +1,11 @@
+# Dipendenze del modello rigido a 2 GdL del gimbal alt-azimutale.
+# Versioni verificate: quelle usate per generare i risultati in results/.
+numpy>=1.26
+scipy>=1.11
+sympy>=1.12
+matplotlib>=3.7
+pyyaml>=6.0
+pytest>=7.4
+
+# Facoltativa: usata solo, se presente, per controlli incrociati su poli e zeri.
+# python-control>=0.9
