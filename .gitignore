@@ -8,3 +8,6 @@ __pycache__/
 # Decommentare se non si vogliono versionare.
 results/
 *.pdf
+
+# Metadati dell'installazione editable (pip install -e .)
+*.egg-info/
